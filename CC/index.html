@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#211813">
+  <title>Cloud COFFEE · POS</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <div id="appShell" class="shell">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark"><img id="logo" src="https://raw.githubusercontent.com/lvkas-pino/files/main/CC/Logotipo_B_Clean.png" alt="Cloud COFFEE"></div>
+        <div>
+          <div class="brand-name">Cloud <span>COFFEE</span></div>
+          <div class="brand-sub">Punto de venta</div>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <div id="connectionBadge" class="status-pill status-muted">Sin conexión</div>
+        <div id="clock" class="clock"></div>
+      </div>
+    </header>
+
+    <main class="workspace">
+      <aside class="sidebar">
+        <button class="nav-btn active" data-view="sale"><span>01</span><b>Venta</b></button>
+        <button class="nav-btn" data-view="sales"><span>02</span><b>Ventas</b></button>
+        <button class="nav-btn" data-view="items"><span>03</span><b>Catálogo</b></button>
+        <button class="nav-btn" data-view="closing"><span>04</span><b>Cierre</b></button>
+        <div class="sidebar-note">
+          <img src="https://raw.githubusercontent.com/lvkas-pino/files/main/CC/RISA3.jpg" alt="Clientes Cloud COFFEE" onerror="this.style.display='none'">
+          <p>Tu café.<br><strong>Tu momento.</strong></p>
+        </div>
+      </aside>
+
+      <section id="view-sale" class="view active">
+        <div class="view-head">
+          <div>
+            <p class="eyebrow">VENTA ACTUAL</p>
+            <h1>¿Qué vamos a preparar?</h1>
+          </div>
+          <button id="refreshSale" class="ghost-btn">↻ Actualizar</button>
+        </div>
+
+        <div class="sale-layout">
+          <section class="catalog-panel card">
+            <div class="toolbar">
+              <div id="categoryBar" class="chips"></div>
+              <input id="productSearch" class="search" type="search" placeholder="Buscar producto…" autocomplete="off">
+            </div>
+            <div id="productGrid" class="product-grid">
+              <div class="empty-state">Cargando catálogo…</div>
+            </div>
+          </section>
+
+          <aside class="cart card">
+            <div class="cart-head">
+              <div>
+                <p class="eyebrow">PEDIDO</p>
+                <h2>Resumen</h2>
+              </div>
+              <button id="clearCart" class="icon-btn" title="Vaciar pedido">×</button>
+            </div>
+            <div id="cartLines" class="cart-lines">
+              <div class="empty-state compact">Agrega productos para comenzar.</div>
+            </div>
+            <div class="cart-foot">
+              <div class="totals-row"><span>Subtotal</span><strong id="cartSubtotal">$0</strong></div>
+              <div class="totals-row total"><span>Total</span><strong id="cartTotal">$0</strong></div>
+
+              <label class="field-label">Método de pago</label>
+              <div class="payment-toggle">
+                <button class="pay-btn active" data-payment="Efectivo">Efectivo</button>
+                <button class="pay-btn" data-payment="Transferencia">Transferencia</button>
+              </div>
+
+              <div id="cashBlock" class="cash-block">
+                <label class="field-label" for="cashReceived">Dinero entregado</label>
+                <input id="cashReceived" class="money-input" inputmode="numeric" placeholder="$0">
+                <div class="change-row"><span>Vuelto</span><strong id="cashChange">$0</strong></div>
+              </div>
+
+              <button id="completeSale" class="primary-btn" disabled>Confirmar venta <span>↗</span></button>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <section id="view-sales" class="view">
+        <div class="view-head">
+          <div>
+            <p class="eyebrow">REGISTRO</p>
+            <h1>Ventas recientes</h1>
+          </div>
+          <button id="refreshSales" class="ghost-btn">↻ Actualizar</button>
+        </div>
+        <div id="salesMetrics" class="metrics"></div>
+        <div class="table-card card">
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Hora</th><th>ID</th><th>Detalle</th><th>Método</th><th>Total</th><th>Estado</th></tr></thead>
+              <tbody id="salesTableBody"><tr><td colspan="6" class="empty-cell">Cargando…</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section id="view-items" class="view">
+        <div class="view-head">
+          <div>
+            <p class="eyebrow">INVENTARIO SIN STOCK</p>
+            <h1>Catálogo de productos</h1>
+          </div>
+          <button id="newItem" class="primary-btn small">+ Nuevo producto</button>
+        </div>
+        <div class="table-card card">
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Producto</th><th>Categoría</th><th>Descripción</th><th>Precio</th><th>Activo</th><th></th></tr></thead>
+              <tbody id="itemsTableBody"><tr><td colspan="6" class="empty-cell">Cargando…</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section id="view-closing" class="view">
+        <div class="view-head">
+          <div>
+            <p class="eyebrow">FIN DE TURNO</p>
+            <h1>Cierre de caja</h1>
+          </div>
+          <button id="refreshClosing" class="ghost-btn">↻ Actualizar</button>
+        </div>
+        <div class="closing-layout">
+          <div class="card closing-summary">
+            <div class="summary-top">
+              <div><p class="eyebrow">PERIODO</p><h2 id="shiftPeriod">Desde el último cierre</h2></div>
+              <div id="shiftOrders" class="big-number">0</div>
+            </div>
+            <div id="closingMetrics" class="metrics stacked"></div>
+            <div class="closing-total"><span>Total turno</span><strong id="shiftTotal">$0</strong></div>
+            <button id="closeShift" class="primary-btn">Registrar cierre <span>→</span></button>
+            <p class="fine-print">El sistema considera automáticamente las ventas posteriores al último cierre registrado.</p>
+          </div>
+          <div class="card closure-history">
+            <div class="cart-head"><div><p class="eyebrow">HISTÓRICO</p><h2>Cierres anteriores</h2></div></div>
+            <div id="closuresList" class="closures-list"><div class="empty-state compact">Cargando…</div></div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div id="toast" class="toast"></div>
+
+  <dialog id="itemDialog" class="dialog">
+    <form id="itemForm" method="dialog" class="dialog-card">
+      <div class="dialog-head"><div><p class="eyebrow">CATÁLOGO</p><h2 id="itemDialogTitle">Nuevo producto</h2></div><button type="button" class="icon-btn" data-close-dialog="itemDialog">×</button></div>
+      <input type="hidden" id="itemId">
+      <div class="form-grid">
+        <label>Nombre<input id="itemName" required maxlength="80"></label>
+        <label>Categoría<input id="itemCategory" required maxlength="40" placeholder="Café, Pastelería…"></label>
+        <label class="full">Descripción<textarea id="itemDescription" maxlength="160"></textarea></label>
+        <label>Precio<input id="itemPrice" required inputmode="numeric"></label>
+        <label>Imagen (ruta/URL)<input id="itemImage" maxlength="300" placeholder="assets/cafe.jpg"></label>
+        <label class="switch-field"><span>Activo</span><input type="checkbox" id="itemActive" checked><i></i></label>
+      </div>
+      <div class="dialog-actions"><button type="button" class="ghost-btn" data-close-dialog="itemDialog">Cancelar</button><button type="button" id="saveItem" class="primary-btn small">Guardar</button></div>
+    </form>
+  </dialog>
+
+  <div id="confirmDialog" class="modal-backdrop hidden">
+    <div class="confirm-card">
+      <p class="eyebrow">CONFIRMAR</p><h3 id="confirmTitle">¿Registrar cierre?</h3><p id="confirmBody">Esta acción quedará en el histórico.</p>
+      <div class="dialog-actions"><button id="confirmCancel" class="ghost-btn">Cancelar</button><button id="confirmOk" class="primary-btn small">Confirmar</button></div>
+    </div>
+  </div>
+
+  <script src="./config.js"></script>
+  <script src="./app.js"></script>
+</body>
+</html>
